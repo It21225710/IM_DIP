@@ -75,7 +75,7 @@ class ImageProcessor:
 
 
 
-
+#lahiranga
     def create_button(self, text, command, row, column):
 
         button = tk.Button(self.root, text=text, command=command)
