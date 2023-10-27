@@ -261,6 +261,77 @@ class ImageProcessor:
         except ValueError:
             self.update_status("Invalid input. Please enter a valid contrast value.")
 
+#sujithra
+    def color_balance(self):
+        if self.image is not None:
+            self.image = apply_color_balance(self.image)
+            self.display_transformed_image()
+            self.update_status("Color Balance Applied")
 
+    def show_histogram(self):
+        if self.image is not None:
+            self.plot_histogram(self.image)
+            
+    def plot_histogram(self, image):
+        # Convert the image to grayscale if it's in color
+        if len(image.shape) == 3:
+            image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+        
+        # Calculate the histogram
+        hist = cv2.calcHist([image], [0], None, [256], [0, 256])
+        
+        # Plot the histogram using matplotlib
+        plt.figure()
+        plt.title("Histogram")
+        plt.xlabel("Pixel Value")
+        plt.ylabel("Frequency")
+        plt.hist(image.ravel(), 256, [0, 256])
+        plt.show()
+
+    def region_segmentation(self):
+        if self.image is not None:
+            self.image = perform_region_segmentation(self.image)
+            self.display_transformed_image()
+            self.update_status("Region-Based Segmentation Applied")
+
+def apply_color_balance(image):
+    # Convert the image to LAB color space
+    lab_image = cv2.cvtColor(image, cv2.COLOR_BGR2LAB)
+
+    # Split the LAB image into L, A, and B channels
+    l_channel, a_channel, b_channel = cv2.split(lab_image)
+
+    # Apply CLAHE to the L channel
+    clahe = cv2.createCLAHE(clipLimit=3.0, tileGridSize=(8, 8))
+    cl = clahe.apply(l_channel)
+
+    # Merge the CLAHE enhanced L channel with the original A and B channels
+    balanced_lab_image = cv2.merge((cl, a_channel, b_channel))
+
+    # Convert the LAB image back to BGR color space
+    balanced_bgr_image = cv2.cvtColor(balanced_lab_image, cv2.COLOR_LAB2BGR)
+
+    return balanced_bgr_image
+
+def perform_region_segmentation(image):
+    # Convert the image to grayscale if it's in color
+    if len(image.shape) == 3:
+        image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    
+    # Apply thresholding to create a binary image
+    _, binary_image = cv2.threshold(image, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+
+    # Find contours in the binary image
+    contours, _ = cv2.findContours(binary_image, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+
+    # Draw the contours on the original image
+    segmented_image = cv2.drawContours(image.copy(), contours, -1, (0, 255, 0), 2)
+
+    return segmented_image
+
+if __name__ == '__main__':
+    root = tk.Tk()
+    app = ImageProcessor(root)
+    root.mainloop()
 
   
