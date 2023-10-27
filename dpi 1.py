@@ -262,7 +262,7 @@ class ImageProcessor:
             self.update_status("Invalid input. Please enter a valid contrast value.")
 
 #sujithra
-def color_balance(self):
+    def color_balance(self):
         if self.image is not None:
             self.image = apply_color_balance(self.image)
             self.display_transformed_image()
@@ -329,9 +329,9 @@ def perform_region_segmentation(image):
 
     return segmented_image
 
-if name == 'main':
+if __name__ == '__main__':
     root = tk.Tk()
     app = ImageProcessor(root)
-    root.mainloop()
+    root.mainloop()
 
   
