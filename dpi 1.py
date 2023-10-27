@@ -182,8 +182,84 @@ class ImageProcessor:
 
             self.update_status("Invalid input. Please enter a valid angle.")
 
+#Ravindu
+    def crop(self):
+        crop_coords = self.crop_entry.get()
+        try:
+            x, y, w, h = map(int, crop_coords.split(','))
+            self.image = self.image[y:y + h, x:x + w]
+            self.display_transformed_image()
+            self.update_status("Cropped Image")
+        except ValueError:
+            self.update_status("Invalid input. Please enter valid coordinates.")
 
+    def horizontal_flip(self):
+        if self.image is not None:
+            self.image = cv2.flip(self.image, 1)  # 1 for horizontal flip
+            self.display_transformed_image()
+            self.update_status("Applied Horizontal Flip")
 
+    def vertical_flip(self):
+        if self.image is not None:
+            self.image = cv2.flip(self.image, 0)  # 0 for vertical flip
+            self.display_transformed_image()
+            self.update_status("Applied Vertical Flip")
+
+    def invert_colors(self):
+        if self.image is not None:
+            self.image = cv2.bitwise_not(self.image)
+            self.display_transformed_image()
+            self.update_status("Colors Inverted")
+
+    def sharpen(self):
+        if self.image is not None:
+            kernel = np.array([[-1, -1, -1],
+                               [-1, 9, -1],
+                               [-1, -1, -1]])
+            self.image = cv2.filter2D(self.image, -1, kernel)
+            self.display_transformed_image()
+            self.update_status("Applied Sharpen")
+
+    def smooth(self):
+        if self.image is not None:
+            self.image = cv2.GaussianBlur(self.image, (5, 5), 0)
+            self.display_transformed_image()
+            self.update_status("Applied Smooth")
+
+    def edge_detection(self):
+        if self.image is not None:
+            self.image = cv2.Canny(self.image, 100, 200)
+            self.display_transformed_image()
+            self.update_status("Edge Detection Applied")
+
+    def emboss(self):
+        if self.image is not None:
+            kernel = np.array([[-2, -1, 0],
+                               [-1, 1, 1],
+                               [0, 1, 2]])
+            self.image = cv2.filter2D(self.image, -1, kernel)
+            self.display_transformed_image()
+            self.update_status("Applied Emboss")
+
+    def adjust_brightness(self):
+        brightness_value = self.brightness_entry.get()
+        try:
+            brightness = float(brightness_value)
+            self.image = cv2.convertScaleAbs(self.image, alpha=1, beta=brightness)
+            self.display_transformed_image()
+            self.update_status(f"Brightness adjusted ({brightness})")
+        except ValueError:
+            self.update_status("Invalid input. Please enter a valid brightness value.")
+
+    def adjust_contrast(self):
+        contrast_value = self.contrast_entry.get()
+        try:
+            contrast = float(contrast_value)
+            self.image = cv2.convertScaleAbs(self.image, alpha=contrast, beta=0)
+            self.display_transformed_image()
+            self.update_status(f"Contrast adjusted ({contrast})")
+        except ValueError:
+            self.update_status("Invalid input. Please enter a valid contrast value.")
 
 
 
