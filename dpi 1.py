@@ -71,6 +71,121 @@ class ImageProcessor:
         self.contrast_entry.grid(row=19, column=1, pady=10)
         self.contrast_button = self.create_button("Adjust Contrast", self.adjust_contrast, 19, column=2)
 
+
+
+
+
+
+
+
+
+  
+def create_button(self, text, command, row, column):
+
+        button = tk.Button(self.root, text=text, command=command)
+
+        button.grid(row=row, column=column, pady=10, padx=10)
+
+        return button
+
+    def load_image(self):
+
+        file_path = filedialog.askopenfilename(filetypes=[("Image Files", "*.jpg *.png *.jpeg")])
+
+        if file_path:
+
+            self.original_image = cv2.imread(file_path)
+
+            self.image = self.original_image.copy()  # Make a copy for processing
+
+            self.display_input_image()
+
+            self.display_transformed_image()
+
+    def display_input_image(self):
+
+        if self.original_image is not None:
+
+            image_rgb = cv2.cvtColor(self.original_image, cv2.COLOR_BGR2RGB)
+
+            image_pil = Image.fromarray(image_rgb)
+
+            self.input_photo = ImageTk.PhotoImage(image=image_pil)
+
+            self.input_image_label.configure(image=self.input_photo)
+
+            self.input_image_label.image = self.input_photo
+
+    def display_transformed_image(self):
+
+        if self.image is not None:
+
+            image_rgb = cv2.cvtColor(self.image, cv2.COLOR_BGR2RGB)
+
+            image_pil = Image.fromarray(image_rgb)
+
+            self.transformed_photo = ImageTk.PhotoImage(image=image_pil)
+
+            self.transformed_image_label.configure(image=self.transformed_photo)
+
+            self.transformed_image_label.image = self.transformed_photo
+
+    def update_status(self, text):
+
+        self.status_label.config(text=text)
+
+    def reset(self):
+
+        if self.original_image is not None:
+
+            self.image = self.original_image.copy()
+
+            self.display_transformed_image()
+
+            self.update_status("Image Reset")
+
+    def black_and_white(self):
+
+        if self.image is not None:
+
+            self.image = cv2.cvtColor(self.image, cv2.COLOR_BGR2GRAY)
+
+            self.display_transformed_image()
+
+            self.update_status("Applied Black & White")
+
+    def grayscale(self):
+
+        if self.image is not None:
+
+            self.image = cv2.cvtColor(self.image, cv2.COLOR_BGR2GRAY)
+
+            self.display_transformed_image()
+
+            self.update_status("Applied Grayscale")
+
+    def rotate(self):
+
+        rotation_angle = self.rotation_entry.get()
+
+        try:
+
+            angle = float(rotation_angle)
+
+            rows, cols, _ = self.image.shape
+
+            M = cv2.getRotationMatrix2D((cols / 2, rows / 2), angle, 1)
+
+            self.image = cv2.warpAffine(self.image, M, (cols, rows))
+
+            self.display_transformed_image()
+
+            self.update_status("Rotated Image")
+
+        except ValueError:
+
+            self.update_status("Invalid input. Please enter a valid angle.")
+
         self.color_balance_button = self.create_button("Color Balance", self.color_balance, 20, column=0)
         
         self.histogram_button = self.create_button("Show Histogram", self.show_histogram, 20, column=1)
