@@ -75,6 +75,7 @@ class ImageProcessor:
 
 
 
+
     def create_button(self, text, command, row, column):
 
         button = tk.Button(self.root, text=text, command=command)
@@ -180,6 +181,8 @@ class ImageProcessor:
         except ValueError:
 
             self.update_status("Invalid input. Please enter a valid angle.")
+
+
 
 
 
